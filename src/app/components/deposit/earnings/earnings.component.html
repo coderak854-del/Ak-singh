@@ -1,0 +1,20 @@
+
+<h2 class="section-title">Earnings</h2>
+<div class="custom-card text-center">
+    <i class="bi bi-coin display-4 text-accent mb-3"></i>
+    <p class="text-secondary mb-4">Track your earnings from tournaments and referrals here.</p>
+
+    @if (userProfile(); as profile) {
+        <div>
+            <p>Total Earned: <strong>{{ profile.totalEarnings ?? 0 | currency:'INR':'symbol':'1.0-2' }}</strong></p>
+            <p>From Referrals: <strong>{{ profile.referralEarnings ?? 0 | currency:'INR':'symbol':'1.0-2' }}</strong></p>
+        </div>
+    } @else {
+        <div class="placeholder-glow">
+            <p>Total Earned: <strong class="placeholder col-3"></strong></p>
+            <p>From Referrals: <strong class="placeholder col-3"></strong></p>
+        </div>
+    }
+
+    <button class="btn btn-custom btn-custom-link mt-3" (click)="viewHistory()">View History</button>
+</div>

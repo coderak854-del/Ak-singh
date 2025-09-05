@@ -1,0 +1,40 @@
+
+<div class="container mx-auto p-0 md:p-8 max-w-2xl">
+    <header class="text-center mb-8">
+        <h1 class="text-3xl md:text-4xl font-bold text-gray-200">Support Center</h1>
+        <p class="text-gray-400 mt-2">Apni samasya batayein, hum aapki sahayata karenge.</p>
+    </header>
+
+    <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg" style="background-color: var(--secondary-bg);">
+        <h2 class="text-2xl font-bold mb-6 text-center text-gray-200">Create a New Support Ticket</h2>
+        <form #ticketForm="ngForm" (ngSubmit)="submitTicket()">
+            <div class="mb-4">
+                <label for="description" class="block text-gray-400 font-medium mb-2">Problem Description</label>
+                <textarea id="description" name="description" rows="4" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" style="background-color: var(--primary-bg); border-color: var(--border-color); color: var(--text-primary);" placeholder="What is your issue? Please describe in detail..." required [(ngModel)]="description"></textarea>
+            </div>
+            <div class="mb-4">
+                <label for="photo" class="block text-gray-400 font-medium mb-2">Upload Photo / Screenshot</label>
+                <input type="file" id="photo" name="photo" accept="image/*" (change)="onPhotoSelected($event)" class="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-900 file:text-blue-300 hover:file:bg-blue-800">
+            </div>
+            <div class="mb-6">
+                <label for="video" class="block text-gray-400 font-medium mb-2">Upload Video (Optional)</label>
+                <input type="file" id="video" name="video" accept="video/*" (change)="onVideoSelected($event)" class="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-900 file:text-blue-300 hover:file:bg-blue-800">
+            </div>
+            <div class="flex items-center justify-center">
+                <button type="submit" class="w-full bg-green-500 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75 transition duration-200 ease-in-out flex items-center justify-center" [disabled]="isSubmitting()">
+                    <span>{{ isSubmitting() ? 'Submitting...' : 'Submit Ticket' }}</span>
+                    @if(isSubmitting()) {
+                        <div class="support-loader ml-3"></div>
+                    }
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Toast Notification -->
+@if(toastMessage(); as msg) {
+    <div class="fixed bottom-5 right-5 text-white py-2 px-4 rounded-lg shadow-lg" [class]="msg.type === 'success' ? 'bg-green-500' : 'bg-red-500'">
+        <span>{{ msg.text }}</span>
+    </div>
+}

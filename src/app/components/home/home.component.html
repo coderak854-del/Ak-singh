@@ -1,0 +1,69 @@
+
+<!-- Promotion Slider -->
+<div #promotionSlider class="swiper-container mb-4" style="border-radius: 10px;">
+  <div class="swiper-wrapper">
+    @if(promotions() === null) {
+        <div class="swiper-slide placeholder-glow"><span class="placeholder block w-full h-full rounded-lg"></span></div>
+    } @else if (promotions()?.length) {
+        @for(promo of promotions(); track promo.imageUrl) {
+            <div class="swiper-slide">
+                @if(promo.link) {
+                    <a [href]="promo.link" target="_blank"><img [src]="promo.imageUrl" alt="Promo" class="w-full h-full object-cover"></a>
+                } @else {
+                    <img [src]="promo.imageUrl" alt="Promo" class="w-full h-full object-cover">
+                }
+            </div>
+        }
+    }
+  </div>
+  <div class="swiper-pagination"></div>
+</div>
+
+<!-- Esport Games -->
+<h2 class="section-title">Esport Games</h2>
+<div class="row g-3 mb-4">
+    @if(games() === null) {
+        @for(i of [1,2]; track i) {
+            <div class="col-6">
+                <div class="game-card custom-card placeholder-glow">
+                    <span class="placeholder block" style="height: 130px;"></span>
+                    <span class="placeholder d-block mt-2 col-8 mx-auto" style="height: 20px;"></span>
+                </div>
+            </div>
+        }
+    } @else if(games()?.length) {
+         @for(game of games(); track game.id) {
+            <div class="col-6">
+                <div class="game-card custom-card" (click)="viewTournaments(game.id, game.name)">
+                    <img [src]="game.imageUrl" [alt]="game.name">
+                    <span>{{ game.name }}</span>
+                </div>
+            </div>
+        }
+    } @else {
+        <p class="text-secondary text-center col-12">No games available.</p>
+    }
+</div>
+
+<!-- My Contests -->
+<h2 class="section-title">My Contests</h2>
+<div class="placeholder-glow">
+    @if(myContests() === null) {
+        <div class="tournament-card placeholder-glow mb-3">
+            <span class="placeholder col-6" style="height: 18px;"></span>
+            <span class="placeholder col-12 mt-2" style="height: 24px;"></span>
+            <span class="placeholder col-10 mt-2" style="height: 16px;"></span>
+            <div class="d-flex justify-content-between mt-3">
+                <span class="placeholder col-4" style="height: 30px; border-radius: 6px;"></span>
+                <span class="placeholder col-4" style="height: 30px; border-radius: 6px;"></span>
+            </div>
+        </div>
+    } @else if (myContests()?.length) {
+        @for(contest of myContests(); track contest.id) {
+            <!-- TODO: Implement a tournament card component -->
+            <p>My Contest: {{ contest.name }}</p>
+        }
+    } @else {
+         <p class="text-secondary text-center">You haven't joined any upcoming contests yet.</p>
+    }
+</div>

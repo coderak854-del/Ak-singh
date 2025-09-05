@@ -1,0 +1,66 @@
+
+<div class="container" style="max-width: 450px; margin-top: 5vh;">
+  <div class="card shadow-sm custom-card">
+    <div class="card-body p-4">
+      
+      <!-- Login Form -->
+      @if (showLogin()) {
+        <form #loginForm="ngForm" (ngSubmit)="onLogin()">
+          <h2 class="text-2xl font-bold text-center mb-4 text-gray-100">Login</h2>
+          <div class="mb-3">
+            <label for="loginEmailInputEl" class="form-label">Email</label>
+            <input type="email" class="form-control" id="loginEmailInputEl" placeholder="name@example.com" required [(ngModel)]="loginEmail" name="loginEmail">
+          </div>
+          <div class="mb-3">
+            <label for="loginPasswordInputEl" class="form-label">Password</label>
+            <input type="password" class="form-control" id="loginPasswordInputEl" placeholder="Password" required [(ngModel)]="loginPassword" name="loginPassword">
+          </div>
+          
+          @if(loginMessage(); as msg) {
+            <div class="alert mt-3" [class]="'alert-' + msg.type">{{ msg.text }}</div>
+          }
+
+          <div class="d-grid gap-2 mb-3">
+            <button type="submit" class="btn btn-custom btn-custom-primary" [disabled]="firebaseService.isLoading()">
+              @if(firebaseService.isLoading()){ <span class="spinner-border spinner-border-sm"></span> } @else { Login }
+            </button>
+            <button type="button" class="btn-custom-link btn-sm p-0 text-center d-block" (click)="toggleForm(false)">Need an account? Sign Up</button>
+            <a href="#" (click)="$event.preventDefault(); onForgotPassword()" class="text-center small mt-2 d-block" style="color: var(--text-secondary);">Forgot Password?</a>
+          </div>
+        </form>
+      } @else {
+        <!-- Signup Form -->
+        <form #signupForm="ngForm" (ngSubmit)="onSignup()">
+          <h2 class="text-2xl font-bold text-center mb-4 text-gray-100">Sign Up</h2>
+          <div class="mb-3">
+            <label for="signupEmailInputEl" class="form-label">Email</label>
+            <input type="email" class="form-control" id="signupEmailInputEl" placeholder="name@example.com" required [(ngModel)]="signupEmail" name="signupEmail">
+          </div>
+          <div class="mb-3">
+            <label for="signupPasswordInputEl" class="form-label">Password (min 6 chars)</label>
+            <input type="password" class="form-control" id="signupPasswordInputEl" placeholder="Password" required minlength="6" [(ngModel)]="signupPassword" name="signupPassword">
+          </div>
+          <div class="mb-3">
+            <label for="signupConfirmPasswordInputEl" class="form-label">Confirm Password</label>
+            <input type="password" class="form-control" id="signupConfirmPasswordInputEl" placeholder="Confirm Password" required [(ngModel)]="signupConfirmPassword" name="signupConfirmPassword">
+          </div>
+          <div class="mb-3">
+            <label for="signupReferralCodeInputEl" class="form-label">Referral Code (Optional)</label>
+            <input type="text" class="form-control" id="signupReferralCodeInputEl" placeholder="Enter referral code" [(ngModel)]="signupReferralCode" name="signupReferralCode">
+          </div>
+          
+          @if(signupMessage(); as msg) {
+            <div class="alert mt-3" [class]="'alert-' + msg.type">{{ msg.text }}</div>
+          }
+
+          <div class="d-grid gap-2 mb-3">
+            <button type="submit" class="btn btn-custom btn-custom-accent" [disabled]="firebaseService.isLoading()">
+               @if(firebaseService.isLoading()){ <span class="spinner-border spinner-border-sm"></span> } @else { Sign Up }
+            </button>
+            <button type="button" class="btn-custom-link btn-sm p-0 text-center d-block" (click)="toggleForm(true)">Already have an account? Login</button>
+          </div>
+        </form>
+      }
+    </div>
+  </div>
+</div>

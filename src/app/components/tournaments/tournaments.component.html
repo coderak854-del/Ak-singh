@@ -1,0 +1,81 @@
+
+<div class="tournament-tabs">
+    <button class="tab-item" [class.active]="activeTab() === 'upcoming'" (click)="changeTab('upcoming')">
+        <i class="bi bi-calendar-event-fill"></i> Upcoming
+    </button>
+    <button class="tab-item" [class.active]="activeTab() === 'ongoing'" (click)="changeTab('ongoing')">
+        <i class="bi bi-play-circle-fill"></i> Ongoing
+    </button>
+    <button class="tab-item" [class.active]="activeTab() === 'completed'" (click)="changeTab('completed')">
+        <i class="bi bi-trophy-fill"></i> Results
+    </button>
+</div>
+
+<div class="mt-3">
+    @if (firebaseService.isLoading()) {
+        <div class="tournament-card placeholder-glow mb-3">
+            <span class="placeholder col-6"></span> <span class="placeholder col-12 mt-2"></span>
+            <span class="placeholder col-10 mt-2"></span>
+            <div class="d-flex justify-content-between mt-3">
+                <span class="placeholder col-4" style="height: 30px; border-radius: 6px;"></span>
+                <span class="placeholder col-4" style="height: 30px; border-radius: 6px;"></span>
+            </div>
+        </div>
+    } @else if (filteredTournaments().length > 0) {
+        @for (t of filteredTournaments(); track t.id) {
+            @let regCount = t.registeredPlayers ? Object.keys(t.registeredPlayers).length : 0;
+            @let spotsLeft = t.maxPlayers > 0 ? t.maxPlayers - regCount : Infinity;
+            @let isFull = t.maxPlayers > 0 && spotsLeft <= 0;
+            @let isJoined = isLoggedIn() && userProfile()?.joinedTournaments?.[t.id];
+            @let canJoin = !isJoined && !isFull && t.status === 'upcoming';
+
+            <div class="tournament-card">
+                <div class="tournament-card-header">
+                    <div class="tournament-card-tags">
+                        @if(t.mode) { <span>{{ t.mode }}</span> }
+                        @if(t.map) { <span>{{ t.map }}</span> }
+                        @if(t.tags) {
+                            @for (tag of t.tags; track tag) {
+                                <span>{{ tag }}</span>
+                            }
+                        }
+                    </div>
+                    <div class="tournament-card-timer">
+                        @if(t.status === 'upcoming' && t.startTime) { {{ getTimeRemaining(t.startTime) }} }
+                        @else if (t.status === 'ongoing') { LIVE }
+                        @else { ENDED }
+                    </div>
+                </div>
+                <h3 class="tournament-card-title"><i [class]="t.icon || 'bi bi-joystick text-accent'"></i> {{ t.name || 'Tournament' }}</h3>
+                <p class="small text-secondary mb-2"><i class="bi bi-calendar-event"></i> {{ t.startTime | date:'short' }}</p>
+                <div class="tournament-card-info">
+                    <div class="info-item"><span>Prize Pool</span><strong><i class="bi bi-trophy-fill text-accent prize-icon"></i> ₹{{ t.prizePool | number }}</strong></div>
+                    <div class="info-item"><span>Per Kill</span><strong>₹{{ t.perKillPrize | number }}</strong></div>
+                    <div class="info-item"><span>Entry Fee</span><strong [class.text-info]="t.entryFee > 0">{{ t.entryFee > 0 ? ('₹' + t.entryFee) : 'Free' }}</strong></div>
+                </div>
+                <div class="tournament-card-spots">
+                    @if(t.maxPlayers > 0) {
+                        <span [class.text-danger]="spotsLeft <= 5" [class.text-accent]="spotsLeft > 5">{{ spotsLeft }}</span> Spots Left ({{ regCount }}/{{ t.maxPlayers }})
+                        <div class="progress mt-1" style="height: 6px;">
+                            <div class="progress-bar bg-warning" role="progressbar" [style.width.%]="(regCount / t.maxPlayers) * 100"></div>
+                        </div>
+                    } @else {
+                        Unlimited Spots
+                    }
+                </div>
+                <div class="tournament-card-actions">
+                    <button class="btn btn-custom btn-custom-secondary btn-sm btn-details">Details</button>
+                    @if(isJoined) {
+                        <button class="btn btn-custom btn-sm btn-joined" disabled><i class="bi bi-check-circle-fill"></i> Joined</button>
+                    } @else if (canJoin) {
+                        <button class="btn btn-custom btn-sm btn-custom-accent btn-join" (click)="joinTournament(t)">₹{{ t.entryFee }} Join <i class="bi bi-arrow-right-short"></i></button>
+                    } @else {
+                        <button class="btn btn-custom btn-sm btn-disabled" disabled>{{ t.status !== 'upcoming' ? t.status.toUpperCase() : (isFull ? 'Full' : 'Closed') }}</button>
+                    }
+                </div>
+            </div>
+        }
+    } @else {
+        <p class="text-secondary text-center mt-4">No {{ activeTab() }} tournaments found.</p>
+    }
+</div>

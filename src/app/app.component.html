@@ -1,0 +1,77 @@
+
+<!-- Global Loader -->
+@if (firebaseService.isLoading()) {
+  <div id="globalLoaderEl" class="flex">
+    <div class="loader-container">
+        <div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div>
+        <span class="loader-text">ALS</span>
+    </div>
+  </div>
+}
+
+<!-- Header -->
+<header class="app-header">
+    <div class="header-left">
+        @if(showBackButton()) {
+          <button class="header-back-button" (click)="back()" style="display: inline-block;"><i class="bi bi-arrow-left"></i></button>
+        }
+        <img [src]="appSettings()?.logoUrl || 'https://via.placeholder.com/40/FFFFFF/0F172A?text=G'" alt="Logo" class="header-logo">
+        
+        @if(!showBackButton()) {
+            <div class="header-title">
+                <h1 style="text-align:center; font-family: Poppins, sans-serif; font-weight: 800; font-size: 24px; margin: 0;">
+                    <span style="background: linear-gradient(to right, #EC4899, #1E40AF); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                        ALS Gaming
+                    </span>
+                </h1>
+                <span>{{ headerUserGreeting }}</span>
+            </div>
+        } @else {
+            <div class="header-game-title" style="display: block;">{{ headerTitle() }}</div>
+        }
+    </div>
+    <div class="header-right">
+        <button class="notification-icon"> <i class="bi bi-bell-fill"></i> <span class="notification-badge" style="display: none;"></span> </button>
+        @if(isLoggedIn()) {
+            <button class="wallet-chip" (click)="handleNavigation('wallet')"> 
+                <i class="bi bi-wallet-fill"></i> ₹<span>{{ userProfile()?.balance ?? 0 | number:'1.0-0' }}</span> 
+            </button>
+        }
+    </div>
+</header>
+
+<!-- Main Content Area -->
+<main class="main-content">
+    @switch (activeSection()) {
+      @case ('login') { <app-login /> }
+      @case ('home') { <app-home /> }
+      @case ('tournaments') { <app-tournaments /> }
+      @case ('wallet') { <app-wallet /> }
+      @case ('deposit') { <app-deposit /> }
+      @case ('earnings') { <app-earnings /> }
+      @case ('profile') { <app-profile /> }
+      @case ('support') { <app-support /> }
+      @case ('transaction-history') { <app-transaction-history /> }
+    }
+</main>
+
+<!-- Bottom Navigation -->
+<nav class="bottom-nav">
+    <button class="nav-item" [class.active]="activeSection() === 'home'" (click)="handleNavigation('home')">
+      <i class="bi bi-house-door-fill"></i><span>Home</span>
+    </button>
+    @if(isLoggedIn()){
+      <button class="nav-item" [class.active]="activeSection() === 'wallet'" (click)="handleNavigation('wallet')">
+        <i class="bi bi-wallet-fill"></i><span>Wallet</span>
+      </button>
+      <button class="nav-item" [class.active]="activeSection() === 'earnings'" (click)="handleNavigation('earnings')">
+        <i class="bi bi-coin"></i><span>Earnings</span>
+      </button>
+       <button class="nav-item" [class.active]="activeSection() === 'support'" (click)="handleNavigation('support')">
+        <i class="bi bi-headset"></i><span>Support</span>
+      </button>
+      <button class="nav-item" [class.active]="activeSection() === 'profile'" (click)="handleNavigation('profile')">
+        <i class="bi bi-person-fill"></i><span>Profile</span>
+      </button>
+    }
+</nav>

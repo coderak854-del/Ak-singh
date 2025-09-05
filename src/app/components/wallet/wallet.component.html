@@ -1,0 +1,62 @@
+
+@if(userProfile(); as profile) {
+  <div class="wallet-card custom-card">
+    <h2 class="section-title mb-4">Wallet</h2>
+    <div class="balance-item">
+      <span class="balance-item-label">Total Balance</span>
+      <span class="balance-item-value">{{ profile.balance ?? 0 | currency:'INR':'symbol':'1.0-2' }}</span>
+      <div class="balance-item-action">
+        <button class="btn-custom-link" (click)="viewAllTransactions()">History <i class="bi bi-chevron-right"></i></button>
+      </div>
+    </div>
+    <div class="balance-item">
+      <span class="balance-item-label">Winning Cash</span>
+      <span class="balance-item-value">{{ profile.winningCash ?? 0 | currency:'INR':'symbol':'1.0-2' }}</span>
+      <div class="balance-item-action">
+        <button class="btn-withdraw">Withdraw</button>
+      </div>
+    </div>
+    <div class="balance-item">
+      <span class="balance-item-label">Bonus Cash</span>
+      <span class="balance-item-value">{{ profile.bonusCash ?? 0 | currency:'INR':'symbol':'1.0-2' }}</span>
+      <div class="balance-item-action" style="min-width: 100px;"></div>
+    </div>
+    <button class="btn btn-custom btn-custom-secondary w-100 mt-4" (click)="addAmount()">
+      <i class="bi bi-plus-circle-fill me-2"></i>Add Amount
+    </button>
+  </div>
+} @else {
+  <!-- Placeholder -->
+  <div class="wallet-card custom-card placeholder-glow">
+      <h2 class="section-title mb-4">Wallet</h2>
+      <div class="balance-item"><span class="placeholder col-4"></span> <span class="placeholder col-3"></span></div>
+      <div class="balance-item"><span class="placeholder col-4"></span> <span class="placeholder col-3"></span></div>
+      <div class="balance-item"><span class="placeholder col-4"></span> <span class="placeholder col-3"></span></div>
+  </div>
+}
+
+<h3 class="section-title mt-4">Recent Transactions</h3>
+<div class="placeholder-glow">
+  @if(recentTransactions() === null) {
+    @for(i of [1,2,3]; track i) {
+      <div class="custom-card p-2 mb-2">
+        <div class="d-flex justify-content-between"><span class="placeholder col-5" style="height: 16px;"></span><span class="placeholder col-3" style="height: 16px;"></span></div>
+        <div class="small text-secondary mt-1"><span class="placeholder col-6" style="height: 14px;"></span></div>
+      </div>
+    }
+  } @else if(recentTransactions()?.length) {
+    @for(tx of recentTransactions(); track tx.timestamp) {
+      <div class="custom-card p-2 mb-2 d-flex justify-content-between align-items-center">
+        <div>
+          <div class="small fw-bold">{{ tx.description }}</div>
+          <div class="small text-secondary">{{ tx.timestamp | date:'short' }}</div>
+        </div>
+        <div class="fw-bold" [class.text-success]="tx.amount > 0" [class.text-danger]="tx.amount <= 0">
+            {{ tx.amount > 0 ? '+' : '' }}{{ tx.amount | currency:'INR':'symbol':'1.0-2' }}
+        </div>
+      </div>
+    }
+  } @else {
+    <p class="text-secondary text-center mt-3">No recent transactions.</p>
+  }
+</div>

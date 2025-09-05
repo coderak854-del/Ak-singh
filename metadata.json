@@ -1,0 +1,5 @@
+{
+  "name": "ALS Gaming Tournament",
+  "description": "An application for participating in and managing esports tournaments. Track your earnings, manage your wallet, and compete to win.",
+  "requestFramePermissions": []
+}
